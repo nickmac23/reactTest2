@@ -47,12 +47,44 @@
 	// main.js
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(33);
+	var Header = __webpack_require__(172);
+	var Footer = __webpack_require__(173);
+	var Movies = __webpack_require__(174);
+	var BackboneModule = __webpack_require__(175);
+	var frog = new BackboneModule({ id: 'harvey' });
 
-	ReactDOM.render(React.createElement(
-	  'h1',
-	  null,
-	  'dose this work? it does!'
-	), document.getElementById('example'));
+	var Test = React.createClass({
+	  displayName: 'Test',
+
+	  getInitialState: function () {
+	    return {
+	      poster: [],
+	      title: [] };
+	  },
+	  getData: function (text) {
+	    frog.id = text;
+	    posterArray = this.state.poster;
+	    titleArray = this.state.title;
+	    frog.fetch().then(data => {
+	      posterArray.push(data.Poster);
+	      titleArray.push(data.Title);
+	      this.setState({ poster: posterArray, title: titleArray });
+	    });
+	  },
+	  handleUserInput: function (e) {
+	    this.setState({ userInput: 'hello', movie: 'Nick Is Cool' });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(Header, { onSubmit: this.getData }),
+	      React.createElement(Movies, { poster: this.state.poster, title: this.state.title })
+	    );
+	  }
+	});
+
+	ReactDOM.render(React.createElement(Test, null), document.getElementById('example'));
 
 /***/ },
 /* 1 */
@@ -21085,6 +21117,148 @@
 	var ReactMount = __webpack_require__(164);
 
 	module.exports = ReactMount.renderSubtreeIntoContainer;
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var headerStyle = {
+	  textAlign: 'center'
+	};
+
+	var Header = React.createClass({
+	  displayName: 'Header',
+
+	  getInitialState: function () {
+	    return { text: '' };
+	  },
+	  handleTextChange: function (e) {
+	    this.setState({ text: e.target.value });
+	  },
+	  handelSubmit: function (e) {
+	    e.preventDefault();
+	    this.props.onSubmit(this.state.text);
+	    this.setState({ text: '' });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'jumbotron', style: headerStyle },
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Enter a Movie!'
+	      ),
+	      React.createElement(
+	        'form',
+	        { className: 'col-lg-6 col-lg-offset-3 input-group', onSubmit: this.handelSubmit },
+	        React.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Search movie',
+	          value: this.state.text, 'aria-describedby': 'basic-addon2', onChange: this.handleTextChange }),
+	        React.createElement(
+	          'submit',
+	          { className: 'input-group-addon', id: 'basic-addon2' },
+	          'Search'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Header;
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var footerStyle = {};
+
+	var Footer = React.createClass({
+	  displayName: 'Footer',
+
+	  render: function () {
+	    return React.createElement(
+	      'footer',
+	      null,
+	      'this is a footer'
+	    );
+	  }
+	});
+
+	module.exports = Footer;
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var Movies = React.createClass({
+	  displayName: "Movies",
+
+	  render: function () {
+	    var moviesTab = [];
+	    for (var i = 0; i < this.props.poster.length; i++) {
+	      moviesTab.push(React.createElement(
+	        "div",
+	        { className: "row", key: i },
+	        React.createElement(
+	          "div",
+	          { className: "col-sm-6 col-md-4" },
+	          React.createElement(
+	            "div",
+	            { className: "thumbnail" },
+	            React.createElement("img", { src: this.props.poster[i], alt: "..." }),
+	            React.createElement(
+	              "div",
+	              { className: "caption" },
+	              React.createElement(
+	                "h3",
+	                null,
+	                this.props.title[i]
+	              ),
+	              React.createElement(
+	                "p",
+	                null,
+	                "..."
+	              )
+	            )
+	          )
+	        )
+	      ));
+	    }
+	    return React.createElement(
+	      "div",
+	      null,
+	      moviesTab
+	    );
+	  }
+	});
+
+	module.exports = Movies;
+
+/***/ },
+/* 175 */
+/***/ function(module, exports) {
+
+	
+	var Mod = Backbone.Model.extend({
+	  defaults: {
+	    title: '',
+	    bible: '',
+	    lorem: '',
+	    id: ''
+	  },
+	  urlRoot: 'http://www.omdbapi.com/?t=',
+	  url: function () {
+	    return this.urlRoot + encodeURIComponent(this.id);
+	  }
+	});
+
+	module.exports = Mod;
 
 /***/ }
 /******/ ]);
