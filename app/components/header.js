@@ -1,33 +1,55 @@
 var React = require('react')
 
-var headerStyle = {
-  textAlign: 'center'
-}
 
 var Header = React.createClass({
-  getInitialState: function () {
-    return {text: ''}
-  },
-  handleTextChange: function(e) {
-    this.setState({text: e.target.value});
-  },
-  handelSubmit: function (e) {
-    e.preventDefault();
-    this.props.onSubmit(this.state.text)
-    this.setState({text: ''})
-  },
   render: function () {
+    var songObj = this.props.currentSong[0]
+    console.log(songObj);
     return (
-      <div className='jumbotron' style={headerStyle}>
-        <h1>Enter a Movie!</h1>
-        <form className="col-lg-6 col-lg-offset-3 input-group" onSubmit={this.handelSubmit}>
-          <input type="text" className="form-control" placeholder="Search movie"
-          value={this.state.text} aria-describedby="basic-addon2" onChange={this.handleTextChange} />
-          <submit className="input-group-addon" id="basic-addon2">Search</submit>
-        </form>
-      </div>
+      <header id='header'>
+        <div className="media">
+          <a className="media-left" href="#">
+            <img className="media-object pic" id='small' src={this.props.img} alt="Generic placeholder image" />
+          </a>
+          <div className="media-body">
+            <br />
+            <h4 className="media-heading">{!!songObj ? songObj.title : null}</h4>
+            <span>{!!songObj ? songObj.album : null}</span><span> {!!songObj ? songObj.artist[0] : null}</span>
+            <br />
+            <br />
+            <label >Volume <input type="range" /></label>
+            <div className="arrows">
+              <span className="glyphicon glyphicon-backward hoveron" aria-hidden="true" ></span>
+              <span className="glyphicon glyphicon-play hoveron" aria-hidden="true"></span>
+              <span className="glyphicon glyphicon-pause hoveron" aria-hidden="true"></span>
+              <span className="glyphicon glyphicon-forward hoveron" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div className='media-right list'>
+            <h6 ><a href="http://nickpmacintyre.firebaseapp.com">By Nick MacIntyre</a></h6>
+            <form className="inputs">
+                <div className="input-group">
+                  <input type="text" className="form-control inputs" />
+                  <span className="input-group-btn">
+                    <button className="btn btn-default" type="submit"> channel</button>
+                  </span>
+                </div>
+            </form>
+
+            <a className='inputs' href="#">"vm.room"</a>
+            <input type="text" className="form-control inputs"  />
+
+          <h5>
+            <span className='hoveron' style={this.props.order == 'title' ? {color: 'yellow'} : null} >Title</span>
+            <span className='hoveron' style={this.props.order == 'album' ? {color: 'yellow'} : null} > Album</span>
+            <span className='hoveron' style={this.props.order == 'artist' ? {color: 'yellow'} : null} > Artist</span>
+            <span className='hoveron' style={this.props.order == 'genre' ? {color: 'yellow'} : null} > Genre</span>
+          </h5>
+          </div>
+          </div>
+      </header>
     )
   }
-});
+})
 
-module.exports = Header;
+module.exports = Header

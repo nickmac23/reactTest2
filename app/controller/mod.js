@@ -1,4 +1,3 @@
-
 var Mod = Backbone.Model.extend({
   defaults: {
     title: '',

@@ -1,43 +1,38 @@
 // main.js
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Header = require('./components/Header')
-var Footer = require('./components/Footer')
-var Movies = require('./components/movies.js')
-var BackboneModule = require('./controller/mods.js')
-var frog = new BackboneModule({id: 'harvey'})
+var MusicList = require('./components/musicList.js')
+var Header = require('./components/header.js')
 
-
-var Test = React.createClass({
+var Main = React.createClass({
   getInitialState: function () {
     return {
-    poster: [],
-    title: []  }
+      socket: io.connect('https://fathomless-falls-33454.herokuapp.com/'),
+      musicList: [],
+      currentSong: [],
+      img: '',
+      order: '',
+    }
   },
-  getData: function (text){
-    frog.id = text
-    posterArray = this.state.poster
-    titleArray = this.state.title
-    frog.fetch().then(data => {
-      posterArray.push(data.Poster)
-      titleArray.push(data.Title)
-      this.setState({poster: posterArray, title: titleArray})
+  componentDidMount: function () {
+    var self = this
+    this.state.socket.emit('server', {to: 'electron', room: 'nick', info: 'client wants data!'})
+    this.state.socket.on('nick' + 'client', function (data) {
+      self.setState({musicList: data.list, currentSong: [data.music], img: data.image, order: data.order})
+      console.log(data);
     })
-  },
-  handleUserInput: function (e) {
-    this.setState({userInput: 'hello', movie: 'Nick Is Cool'})
   },
   render: function () {
     return (
       <div>
-        <Header onSubmit={this.getData}/>
-        <Movies poster={this.state.poster} title={this.state.title}/>
+      <Header currentSong={this.state.currentSong} img={this.state.img} order={this.state.order}/>
+      <MusicList musicList={this.state.musicList}/>
       </div>
     )
   }
 })
 
 ReactDOM.render(
-  <Test />,
+  <Main />,
   document.getElementById('example')
 );
